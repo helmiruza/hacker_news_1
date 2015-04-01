@@ -1,0 +1,76 @@
+<div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="/">Home</a></li>
+            <li role="presentation" class="active"><a href="/dashboard">Dashboard</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Account <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <% if session[:username] != nil %>
+                <% @user = User.find_by(username: session[:username]) %>
+                <li><a>Logged As: <%="#{session[:username].capitalize}"%></a></li>
+                <%else%>
+                <li><a>Not Logged In</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <%end%>
+                <li class="divider"></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Hacker News #1</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Create A Post</h1>
+        <p class="lead">Leave url blank to submit a question for discussion. If there is no url, the text (if any) will appear at the top of the thread</p>
+        <p>
+          <form action='/dashboard/:username/post/create' method='post'>
+            <input type="text" class="form-control" name="post[title]" placeholder="Input Title">
+            <input type="text" class="form-control" name="post[url]" placeholder="Input URL">
+            <p>OR</p>
+            <textarea class="form-control" rows="5" name="post[text]" placeholder="Input Content"></textarea><br>
+            <button type="submit" class="btn btn-primary btn-lg">Submit Post</a>
+          </form>
+        </p>
+      </div>
+
+      <div class="postlistdash">
+        <div class="row">
+          <h3>Your Recent Posts</h3>
+          <% if !@posts.nil? %>
+            <% @posts.each do |post|%>
+
+                <%if post.url != ""%>
+                  <a href="<%=post.url%>"><h4><%=post.title %></h4></a>
+                <%else%>
+                  <a href="/post/<%=post.id %>"><h4><%=post.title %></h4></a>
+                <%end%>
+                <p>Posted by: <%=post.user.username%> | <a href="/post/<%=post.id %>"><%=post.comments.count %> comments</a></p>
+                
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="postlistdash">
+        <div class="row">
+          <h3>Your Recent Comments</h3>
+          <% if !@comments.nil? %>
+            <% @comments.each do |comment|%>
+                <a href="/post/<%=comment.post.id %>"><h4><%=comment.text %></h4></a>
+                <p>Posted in: <a href="/post/<%=comment.post.id %>"><%=comment.post.title%></a></p>
+                
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>&copy; Company 2014</p>
+      </footer>
+
+</div> <!-- /container -->
